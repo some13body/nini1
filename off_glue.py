@@ -3,9 +3,14 @@ import concurrent.futures
 import requests
 import time
 from bs4 import BeautifulSoup
-
+fi = open('naw.txt','w')
+f = 8000000
+while f < 8010000:
+    fi.write(str(f)+'\r')
+    f += 1
+fi.close()
 out = []
-CONNECTIONS = 10
+CONNECTIONS = 5
 tlds = open('naw.txt').read().splitlines()
 urls = ['http://ninisite.com/discussion/topic/{}'.format(x) for x in tlds]
 def load_url(url):
@@ -18,11 +23,10 @@ def load_url(url):
             test = res_top.find_all('p')
             f = 0
             fi = open('no.txt','a')
-            fil = open('ou.txt','w')
             li = []
             for i in test:
                 fi.write(i.text+'\r')
-                fil.write(url+' done \r')
+            print(url+' done \r')
         elif ans.status_code==404:
             pass
         elif ans.status_code==500:
@@ -34,6 +38,8 @@ def load_url(url):
     except requests.exceptions.ConnectionError:
         sleep(10)
         pass
+    except AttributeError:
+        print('IDK what happend but it was '+ url+' \r')
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS)
 future_to_url = (executor.submit(load_url, url) for url in urls)
 time1 = time.time()
